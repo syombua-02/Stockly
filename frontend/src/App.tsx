@@ -1,57 +1,49 @@
-import StatCard from './components/StatCard'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom'
+
+import DashboardLayout from './layouts/DashboardLayout'
+import Dashboard from './pages/Dashboard'
 
 export default function App() {
   return (
-    <main className="min-h-screen bg-slate-50 p-6 md:p-10">
+    <BrowserRouter>
+      <Routes>
 
-      <header className="mb-10">
-        <h1 className="text-3xl font-bold text-emerald-700">
-          Stockly.
-        </h1>
+        <Route path="/" element={<DashboardLayout />}>
 
-        <p className="mt-1 text-slate-500">
-          Inventory & Business Analytics
-        </p>
-      </header>
+          <Route index element={<Dashboard />} />
 
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold">
-          Dashboard Overview
-        </h2>
+          <Route
+            path="inventory"
+            element={<h1 className="text-3xl font-bold">Inventory</h1>}
+          />
 
-        <p className="mt-1 text-slate-500">
-          Here's how your business is performing.
-        </p>
-      </section>
+          <Route
+            path="sales"
+            element={<h1 className="text-3xl font-bold">Sales</h1>}
+          />
 
-      <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          <Route
+            path="analytics"
+            element={<h1 className="text-3xl font-bold">Analytics</h1>}
+          />
 
-        <StatCard
-          title="Total Revenue"
-          value="KSh 124,500"
-          description="+12.5% this month"
-        />
+          <Route
+            path="suppliers"
+            element={<h1 className="text-3xl font-bold">Suppliers</h1>}
+          />
 
-        <StatCard
-          title="Total Products"
-          value="248"
-          description="18 new products"
-        />
+          <Route
+            path="settings"
+            element={<h1 className="text-3xl font-bold">Settings</h1>}
+          />
 
-        <StatCard
-          title="Total Sales"
-          value="156"
-          description="+8.2% this month"
-        />
+        </Route>
 
-        <StatCard
-          title="Low Stock Items"
-          value="12" 
-          description="Requires attention"
-        />
-
-      </section>
-
-    </main>
+      </Routes>
+    </BrowserRouter>
   )
 }
