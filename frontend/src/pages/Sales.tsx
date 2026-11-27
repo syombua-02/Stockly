@@ -3,6 +3,7 @@ import { Plus, Search } from 'lucide-react'
 import StatCard from '../components/StatCard'
 import SalesTable from '../components/SalesTable'
 import { useSales } from '../hooks/useSales'
+import SaleForm from '../components/SaleForm'
 import {
   getSaleRevenue,
   getSaleProfit,
@@ -14,7 +15,7 @@ export default function Sales() {
 
   const [search, setSearch] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('All')
-
+  const [showForm, setShowForm] = useState(false)
   const totalRevenue = sales.reduce(
     (total, sale) => total + getSaleRevenue(sale),
     0
@@ -65,7 +66,7 @@ export default function Sales() {
         </div>
 
         <button
-          onClick={() => alert('Sale form coming next')}
+          onClick={() => setShowForm(true)}
           className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
         >
           <Plus size={20} />
@@ -142,7 +143,11 @@ export default function Sales() {
       <p className="mt-4 text-sm text-slate-500">
         Showing {filteredSales.length} of {sales.length} transactions
       </p>
-
+        {showForm && (
+  <SaleForm
+    onClose={() => setShowForm(false)}
+  />
+)}
     </div>
   )
 }
