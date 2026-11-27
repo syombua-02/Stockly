@@ -6,7 +6,7 @@ import {
 
 import DashboardLayout from './layouts/DashboardLayout'
 import Dashboard from './pages/Dashboard'
-
+import Inventory from './pages/Inventory'
 export default function App() {
   return (
     <BrowserRouter>
@@ -16,10 +16,7 @@ export default function App() {
 
           <Route index element={<Dashboard />} />
 
-          <Route
-            path="inventory"
-            element={<h1 className="text-3xl font-bold">Inventory</h1>}
-          />
+          <Route path="inventory" element={<Inventory />} />
 
           <Route
             path="sales"
