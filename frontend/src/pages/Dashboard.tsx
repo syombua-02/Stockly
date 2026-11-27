@@ -3,8 +3,23 @@ import RevenueChart from '../components/RevenueChart'
 import SalesChart from '../components/SalesChart'
 import RecentTransactions from '../components/RecentTransactions'
 import InventoryStatus from '../components/InventoryStatus'
+import { useInventory } from '../hooks/useInventory'
+import { getStockStatus } from '../types/product'
 
 export default function Dashboard() {
+  const { products } = useInventory()
+
+  const totalProducts = products.length
+
+  const totalUnits = products.reduce(
+    (total, product) => total + product.quantity,
+    0
+  )
+
+  const lowStock = products.filter(
+    product => getStockStatus(product) === 'Low Stock'
+  ).length
+
   return (
     <div>
 
@@ -27,25 +42,29 @@ export default function Dashboard() {
         <StatCard
           title="Total Revenue"
           value="KSh 124,500"
-          description="+12.5% this month"
+          description="Sample revenue data"
         />
 
         <StatCard
           title="Total Products"
-          value="248"
-          description="18 new products"
+          value={String(totalProducts)}
+          description={`${totalUnits} units available`}
         />
 
         <StatCard
           title="Total Sales"
           value="156"
-          description="+8.2% this month"
+          description="Sample sales data"
         />
 
         <StatCard
           title="Low Stock Items"
-          value="12"
-          description="Requires attention"
+          value={String(lowStock)}
+          description={
+            lowStock > 0
+              ? 'Requires restocking'
+              : 'No low-stock products'
+          }
         />
 
       </section>

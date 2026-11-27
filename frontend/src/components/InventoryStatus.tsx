@@ -5,40 +5,47 @@ import {
 } from 'lucide-react'
 
 import { Link } from 'react-router-dom'
-
-const inventoryData = [
-  {
-    label: 'In Stock',
-    count: 230,
-    icon: PackageCheck,
-    color: 'text-emerald-600',
-    background: 'bg-emerald-50',
-    bar: 'bg-emerald-500',
-  },
-  {
-    label: 'Low Stock',
-    count: 12,
-    icon: TriangleAlert,
-    color: 'text-amber-600',
-    background: 'bg-amber-50',
-    bar: 'bg-amber-500',
-  },
-  {
-    label: 'Out of Stock',
-    count: 6,
-    icon: PackageX,
-    color: 'text-red-600',
-    background: 'bg-red-50',
-    bar: 'bg-red-500',
-  },
-]
-
-const totalProducts = inventoryData.reduce(
-  (total, item) => total + item.count,
-  0
-)
+import { useInventory } from '../hooks/useInventory'
+import { getStockStatus } from '../types/product'
 
 export default function InventoryStatus() {
+  const { products } = useInventory()
+
+  const totalProducts = products.length
+
+  const inventoryData = [
+    {
+      label: 'In Stock',
+      count: products.filter(
+        product => getStockStatus(product) === 'In Stock'
+      ).length,
+      icon: PackageCheck,
+      color: 'text-emerald-600',
+      background: 'bg-emerald-50',
+      bar: 'bg-emerald-500',
+    },
+    {
+      label: 'Low Stock',
+      count: products.filter(
+        product => getStockStatus(product) === 'Low Stock'
+      ).length,
+      icon: TriangleAlert,
+      color: 'text-amber-600',
+      background: 'bg-amber-50',
+      bar: 'bg-amber-500',
+    },
+    {
+      label: 'Out of Stock',
+      count: products.filter(
+        product => getStockStatus(product) === 'Out of Stock'
+      ).length,
+      icon: PackageX,
+      color: 'text-red-600',
+      background: 'bg-red-50',
+      bar: 'bg-red-500',
+    },
+  ]
+
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
@@ -64,7 +71,10 @@ export default function InventoryStatus() {
 
         {inventoryData.map(item => {
           const Icon = item.icon
-          const percentage = (item.count / totalProducts) * 100
+
+          const percentage = totalProducts > 0
+            ? (item.count / totalProducts) * 100
+            : 0
 
           return (
             <div key={item.label}>
@@ -94,7 +104,7 @@ export default function InventoryStatus() {
               <div className="h-2 overflow-hidden rounded-full bg-slate-100">
 
                 <div
-                  className={`h-full rounded-full ${item.bar}`}
+                  className={`h-full rounded-full transition-all duration-500 ${item.bar}`}
                   style={{ width: `${percentage}%` }}
                 />
 
