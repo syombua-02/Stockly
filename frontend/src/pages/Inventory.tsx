@@ -1,15 +1,27 @@
 import { useState } from 'react'
 import { Plus, Search } from 'lucide-react'
 import ProductTable from '../components/ProductTable'
+import ProductForm from '../components/ProductForm'
 import StatCard from '../components/StatCard'
-import { initialProducts } from '../data/products'
+import { useInventory } from '../hooks/useInventory'
 import { getStockStatus } from '../types/product'
+import type { Product } from '../types/product'
 import { formatCurrency } from '../utils/formatCurrency'
 
 export default function Inventory() {
-  const [products, setProducts] = useState(initialProducts)
+  const {
+    products,
+    addProduct,
+    updateProduct,
+    removeProduct,
+  } = useInventory()
+
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
+  const [status, setStatus] = useState('All')
+  const [showForm, setShowForm] = useState(false)
+  const [editingProduct, setEditingProduct] =
+    useState<Product | null>(null)
 
   const categories = [
     'All',
@@ -17,7 +29,7 @@ export default function Inventory() {
   ]
 
   const filteredProducts = products.filter(product => {
-    const query = search.toLowerCase()
+    const query = search.trim().toLowerCase()
 
     const matchesSearch =
       product.name.toLowerCase().includes(query) ||
@@ -25,10 +37,12 @@ export default function Inventory() {
       product.supplier.toLowerCase().includes(query)
 
     const matchesCategory =
-      category === 'All' ||
-      product.category === category
+      category === 'All' || product.category === category
 
-    return matchesSearch && matchesCategory
+    const matchesStatus =
+      status === 'All' || getStockStatus(product) === status
+
+    return matchesSearch && matchesCategory && matchesStatus
   })
 
   const inventoryValue = products.reduce(
@@ -45,15 +59,42 @@ export default function Inventory() {
     product => getStockStatus(product) === 'Out of Stock'
   ).length
 
+  function openAddForm() {
+    setEditingProduct(null)
+    setShowForm(true)
+  }
+
+  function openEditForm(product: Product) {
+    setEditingProduct(product)
+    setShowForm(true)
+  }
+
+  function closeForm() {
+    setShowForm(false)
+    setEditingProduct(null)
+  }
+
+  function saveProduct(product: Product) {
+    if (editingProduct) {
+      updateProduct(product)
+    } else {
+      addProduct(product)
+    }
+
+    setCategory('All')
+    setStatus('All')
+    setSearch('')
+    closeForm()
+  }
+
   function deleteProduct(id: string) {
     const confirmed = window.confirm(
       'Are you sure you want to delete this product?'
     )
 
     if (confirmed) {
-      setProducts(previous =>
-        previous.filter(product => product.id !== id)
-      )
+      removeProduct(id)
+      setCategory('All')
     }
   }
 
@@ -77,7 +118,7 @@ export default function Inventory() {
         </div>
 
         <button
-          onClick={() => alert('Product form coming next')}
+          onClick={openAddForm}
           className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
         >
           <Plus size={20} />
@@ -116,7 +157,7 @@ export default function Inventory() {
 
       <section className="mb-5 flex flex-wrap gap-4">
 
-        <div className="relative min-w-0 flex-1">
+        <div className="relative min-w-[180px] flex-1">
 
           <Search
             size={20}
@@ -138,22 +179,32 @@ export default function Inventory() {
           aria-label="Filter by category"
           value={category}
           onChange={event => setCategory(event.target.value)}
-          className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500"
+          className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"
         >
           {categories.map(item => (
             <option key={item} value={item}>
-              {item}
+              {item === 'All' ? 'All Categories' : item}
             </option>
           ))}
+        </select>
+
+        <select
+          aria-label="Filter by stock status"
+          value={status}
+          onChange={event => setStatus(event.target.value)}
+          className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"
+        >
+          <option value="All">All Statuses</option>
+          <option value="In Stock">In Stock</option>
+          <option value="Low Stock">Low Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
         </select>
 
       </section>
 
       <ProductTable
         products={filteredProducts}
-        onEdit={product =>
-          alert(`Editing ${product.name} — coming next`)
-        }
+        onEdit={openEditForm}
         onDelete={deleteProduct}
       />
 
@@ -161,6 +212,15 @@ export default function Inventory() {
         Showing {filteredProducts.length} of {products.length} products
       </p>
 
+      {showForm && (
+        <ProductForm
+          product={editingProduct}
+          products={products}
+          onSave={saveProduct}
+          onClose={closeForm}
+        />
+      )}
+
     </div>
   )
-}
+} 
