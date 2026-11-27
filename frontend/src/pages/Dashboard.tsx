@@ -1,5 +1,6 @@
 import StatCard from '../components/StatCard'
-
+import RevenueChart from '../components/RevenueChart'
+import SalesChart from '../components/SalesChart'
 export default function Dashboard() {
   return (
     <div>
@@ -44,6 +45,17 @@ export default function Dashboard() {
         />
 
       </section>
+      <section className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+  <div className="min-w-0 xl:col-span-2">
+    <RevenueChart />
+  </div>
+
+  <div className="min-w-0">
+    <SalesChart />
+  </div>
+
+</section> .
     </div>
   )
 }
