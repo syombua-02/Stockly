@@ -1,9 +1,13 @@
 import StatCard from '../components/StatCard'
 import RevenueChart from '../components/RevenueChart'
 import SalesChart from '../components/SalesChart'
+import RecentTransactions from '../components/RecentTransactions'
+import InventoryStatus from '../components/InventoryStatus'
+
 export default function Dashboard() {
   return (
     <div>
+
       <section className="mb-8">
         <p className="text-sm font-medium text-emerald-600">
           Business overview
@@ -45,17 +49,31 @@ export default function Dashboard() {
         />
 
       </section>
+
       <section className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
 
-  <div className="min-w-0 xl:col-span-2">
-    <RevenueChart />
-  </div>
+        <div className="min-w-0 xl:col-span-2">
+          <RevenueChart />
+        </div>
 
-  <div className="min-w-0">
-    <SalesChart />
-  </div>
+        <div className="min-w-0">
+          <SalesChart />
+        </div>
 
-</section> .
+      </section>
+
+      <section className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+        <div className="min-w-0 xl:col-span-2">
+          <RecentTransactions />
+        </div>
+
+        <div className="min-w-0">
+          <InventoryStatus />
+        </div>
+
+      </section>
+
     </div>
   )
 }
