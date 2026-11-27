@@ -7,6 +7,7 @@ import {
 import DashboardLayout from './layouts/DashboardLayout'
 import Dashboard from './pages/Dashboard'
 import Inventory from './pages/Inventory'
+import Sales from './pages/Sales'
 export default function App() {
   return (
     <BrowserRouter>
@@ -18,10 +19,7 @@ export default function App() {
 
           <Route path="inventory" element={<Inventory />} />
 
-          <Route
-            path="sales"
-            element={<h1 className="text-3xl font-bold">Sales</h1>}
-          />
+          <Route path="sales" element={<Sales />} />
 
           <Route
             path="analytics"
